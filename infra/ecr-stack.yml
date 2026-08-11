@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Infraestructura base AWS para LabInventory API
+
+Parameters:
+  RepositoryName:
+    Type: String
+    Default: labinventory
+    Description: Nombre del repositorio ECR
+
+Resources:
+
+  LabInventoryRepository:
+    Type: AWS::ECR::Repository
+
+    Properties:
+      RepositoryName: !Ref RepositoryName
+
+      ImageScanningConfiguration:
+        ScanOnPush: true
+
+      ImageTagMutability: MUTABLE
+
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Mantener solo las ultimas 10 imagenes",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 10
+                },
+                "action": {
+                  "type": "expire"
+                }
+              }
+            ]
+          }
+
+      Tags:
+        - Key: Project
+          Value: LabInventory
+
+        - Key: Environment
+          Value: Production
+
+        - Key: ManagedBy
+          Value: CloudFormation
+
+Outputs:
+
+  RepositoryName:
+    Description: Nombre del repositorio ECR
+    Value: !Ref LabInventoryRepository
+
+  RepositoryUri:
+    Description: URI del repositorio ECR
+    Value: !GetAtt LabInventoryRepository.RepositoryUri
