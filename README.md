@@ -83,3 +83,11 @@ Listar equipos:
 
 ```text
 GET /api/equipos/
+
+## Estado del proyecto
+
+Versión actual: 1.0.0
+
+Estado: desarrollo activo.
+
+
